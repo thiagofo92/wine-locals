@@ -1,0 +1,24 @@
+{
+  "name": "wine-locals",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "github.com:thiagofo92/wine-locals.git"
+  },
+  "author": "thiagofo92@gmail.com",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/thiagofo92/wine-locals/issues"
+  },
+  "homepage": "https://github.com/thiagofo92/wine-locals#readme",
+  "devDependencies": {
+    "@types/node": "^20.4.1",
+    "tsx": "^3.12.7",
+    "typescript": "^5.1.6"
+  }
+}
