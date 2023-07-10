@@ -1,1 +1,5 @@
-export interface WineryEntity {}
+export interface WineryEntity {
+  id: string
+  name: string
+  address: string
+}
