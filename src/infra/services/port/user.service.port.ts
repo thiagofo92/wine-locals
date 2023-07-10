@@ -1,10 +1,11 @@
-import { Either } from "../../shared/errors/either";
+import { UserEntity } from "@/core/entities";
+import { Either } from "@/shared/errors/either";
 
 export interface UserSerivcePort {
-  create: (input: unknown) => Promise<Either<Error, unknown>>
-  update: (input: unknown) => Promise<Either<Error, unknown>>
-  delete: (id: string) => Promise<Either<Error, unknown>>
-  findById: (id: string) => Promise<Either<Error, unknown>>
-  findAll: () => Promise<Either<Error, unknown>>
-  validate: () => Promise<Either<Error, unknown>>
+  create: (input: UserEntity) => Promise<Either<Error, string>>
+  update: (input: UserEntity) => Promise<Either<Error, boolean>>
+  delete: (id: string) => Promise<Either<Error, boolean>>
+  findById: (id: string) => Promise<Either<Error, UserEntity>>
+  findAll: () => Promise<Either<Error, UserEntity[]>>
+  validate: () => Promise<Either<Error, boolean>>
 }
