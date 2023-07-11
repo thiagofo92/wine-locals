@@ -1,9 +1,9 @@
 import { type Either, left, right } from '@/shared/errors/either'
-import { type UserSerivcePort } from '../port'
+import { type UserServicePort } from '../port'
 import { type UserEntity } from '@/core/entities'
 import { DataServiceNotFound } from '../errors/data.service.error'
 
-export class UserMemoryService implements UserSerivcePort {
+export class UserMemoryService implements UserServicePort {
   private readonly users: UserEntity [] = []
   async create (input: UserEntity): Promise<Either<Error, string>> {
     try {
@@ -41,7 +41,7 @@ export class UserMemoryService implements UserSerivcePort {
     }
   }
 
-  async findById (id: string): Promise<Either<Error, UserEntity | null>> {
+  async findById (id: string): Promise<Either<Error, UserEntity>> {
     try {
       const user = this.users.find(item => item.id === id)
 

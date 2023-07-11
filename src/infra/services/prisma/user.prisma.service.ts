@@ -1,7 +1,7 @@
 import { Either, left, right } from "@/shared/errors/either";
-import { UserSerivcePort } from "../port";
+import { UserServicePort } from "../port";
 
-export class UserPrismaService implements UserSerivcePort {
+export class UserPrismaService implements UserServicePort {
   async create (input: unknown):  Promise<Either<Error, unknown>> {
     try {
       return right('') 
