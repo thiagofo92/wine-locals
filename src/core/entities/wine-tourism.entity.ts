@@ -1,9 +1,9 @@
-export interface WineTourismEntity { 
-  id: number
+export interface WineTourismEntity {
+  id?: number
   idWinery: number
   name: string
   description: string
-  price: number
+  price: string
   openDays: WineTourismEntity.Week
   startHour: string
   endHour: string
@@ -19,5 +19,5 @@ export namespace WineTourismEntity {
     Saturday = 'Saturday',
     Sunday = 'Sunday',
     All = 'All'
-}
+  }
 }
