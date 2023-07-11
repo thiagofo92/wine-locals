@@ -1,12 +1,12 @@
 import { right, type Either, left } from '@/shared/errors/either'
-import { type WineryUseCasePort } from '../port'
-import { type WineryServicePort } from '@/infra/services/port'
-import { type WineryAppDto } from '../dto'
+import { type WineTourismUseCasePort } from '../port'
+import { type WineTourismServicePort } from '@/infra/services/port'
+import { type WineTourismAppDto } from '../dto'
 
-export class WineryUseCase implements WineryUseCasePort {
-  constructor (private readonly service: WineryServicePort) {}
+export class WineTourismUseCase implements WineTourismUseCasePort {
+  constructor (private readonly service: WineTourismServicePort) {}
 
-  async create (input: WineryAppDto): Promise<Either<Error, boolean>> {
+  async create (input: WineTourismAppDto): Promise<Either<Error, boolean>> {
     const result = await this.service.create(input)
 
     if (result.isLeft()) {
@@ -16,7 +16,7 @@ export class WineryUseCase implements WineryUseCasePort {
     return right(result.value)
   }
 
-  async update (input: WineryAppDto): Promise<Either<Error, boolean>> {
+  async update (input: WineTourismAppDto): Promise<Either<Error, boolean>> {
     const result = await this.service.update(input)
 
     if (result.isLeft()) {
@@ -35,7 +35,7 @@ export class WineryUseCase implements WineryUseCasePort {
     return right(result.value)
   }
 
-  async findById (id: number): Promise<Either<Error, WineryAppDto>> {
+  async findById (id: number): Promise<Either<Error, WineTourismAppDto>> {
     const result = await this.service.findById(id)
 
     if (result.isLeft()) {
@@ -45,7 +45,7 @@ export class WineryUseCase implements WineryUseCasePort {
     return right(result.value)
   }
 
-  async findAll (): Promise<Either<Error, WineryAppDto[]>> {
+  async findAll (): Promise<Either<Error, WineTourismAppDto[]>> {
     const result = await this.service.findAll()
 
     if (result.isLeft()) {
