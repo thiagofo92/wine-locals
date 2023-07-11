@@ -1,7 +1,7 @@
 import { Either, left, right } from "@/shared/errors/either";
 import { UserSerivcePort } from "../port";
 import { UserEntity } from "@/core/entities";
-import { UserServiceUserNotFound } from "../errors/user.service.error";
+import { DataServiceNotFound } from "../errors/data.service.error";
 
 export class UserMemoryService implements UserSerivcePort {
   private readonly users: UserEntity [] = []
@@ -17,7 +17,7 @@ export class UserMemoryService implements UserSerivcePort {
     try {
       const index = this.users.findIndex(item => item.id === input.id)
 
-      if(index < 0) return left(new UserServiceUserNotFound()) 
+      if(index < 0) return left(new DataServiceNotFound()) 
 
       this.users[index] = input
       return right(true) 
@@ -29,7 +29,7 @@ export class UserMemoryService implements UserSerivcePort {
     try {
       const index = this.users.findIndex(item => item.id === id)
 
-      if(index < 0) return left(new UserServiceUserNotFound())
+      if(index < 0) return left(new DataServiceNotFound())
 
       this.users.splice(index, 1)
 
@@ -42,7 +42,7 @@ export class UserMemoryService implements UserSerivcePort {
     try {
       const user = this.users.find(item => item.id === id)
 
-      if(!user) return left(new UserServiceUserNotFound())
+      if(!user) return left(new DataServiceNotFound())
       
       return right(user) 
     } catch (error: any) {
