@@ -1,9 +1,9 @@
 import { type WineTourismEntity } from '@/core/entities'
 import { right, type Either, left } from '@/shared/errors/either'
-import { type WineTourismSerivcePort } from '../port'
+import { type WineTourismServicePort } from '../port'
 import { DataServiceNotFound } from '../errors/data.service.error'
 
-export class WineTourismMemoryService implements WineTourismSerivcePort {
+export class WineTourismMemoryService implements WineTourismServicePort {
   private readonly wineTourims: WineTourismEntity[] = []
   async create (input: WineTourismEntity): Promise<Either<Error, boolean>> {
     this.wineTourims.push(input)
