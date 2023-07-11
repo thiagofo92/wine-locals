@@ -1,5 +1,5 @@
 import { WineryMemoryService } from '@/infra/services/memory/winery.memory.service'
-import { type WinerySerivcePort } from '@/infra/services/port'
+import { type WineryServicePort } from '@/infra/services/port'
 import { describe, test, vi, expect } from 'vitest'
 import { type WineryUseCasePort } from '../port'
 import { WineryUseCase } from '../usecase/winery.usecase'
@@ -10,7 +10,7 @@ import { DataServiceNotFound } from '@/infra/services/errors/data.service.error'
 
 interface Factory {
   usecase: WineryUseCasePort
-  service: WinerySerivcePort
+  service: WineryServicePort
 }
 
 function FactoryUseCase (): Factory {
