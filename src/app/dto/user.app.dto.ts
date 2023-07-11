@@ -1,4 +1,4 @@
-import { UserEntity } from "@/core/entities";
+import { type UserEntity } from '@/core/entities'
 
 type UserProperty = {
   [k in keyof UserEntity]: UserEntity[k]
