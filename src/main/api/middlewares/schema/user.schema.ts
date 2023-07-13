@@ -6,7 +6,7 @@ import * as Yup from 'yup'
 const UserSchema = Yup.object({
   name: Yup.string().max(20),
   cpf: Yup.string().max(11),
-  birthday: Yup.date(),
+  birthday: Yup.string(),
   password: Yup.string().max(16),
   email: Yup.string().email().max(35)
 })
