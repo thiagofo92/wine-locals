@@ -1,6 +1,6 @@
 export interface EventEntity {
   id?: number
-  idUser: number
+  idUser: string
   idWineTourism: number
   date: string
   hour: string

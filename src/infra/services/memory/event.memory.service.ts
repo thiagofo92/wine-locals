@@ -1,8 +1,8 @@
 import { type EventEntity } from '@/core/entities'
 import { right, type Either } from '@/shared/errors/either'
-import { type EventSerivcePort } from '../port'
+import { type EventServicePort } from '../port'
 
-export class EventMemoryService implements EventSerivcePort {
+export class EventMemoryService implements EventServicePort {
   private readonly event: EventEntity [] = []
   async create (input: EventEntity): Promise<Either<Error, boolean>> {
     this.event.push(input)
