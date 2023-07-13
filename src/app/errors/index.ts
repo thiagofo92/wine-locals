@@ -1,7 +1,7 @@
 export class UserUseCaseLegalAgeError extends Error {
-  constructor() {
+  constructor () {
     super()
-    this.message = 'User dont has the legal age'
+    this.message = 'Invalid Age, age most be high than 18'
     this.name = 'UserUseCaseLegalAgeError'
   }
 }
