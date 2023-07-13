@@ -9,7 +9,6 @@ RUN mkdir -p /api/wine-locals/prisma/
 COPY ./dist ./api/wine-locals/
 COPY ./package.json ./api/wine-locals
 COPY ./prisma ./api/wine-locals/prisma
-COPY ./pm2-config.json ./api/wine-locals
 COPY ./script.sh ./api/wine-locals
 
 WORKDIR /var/api/wine-locals
