@@ -1,3 +1,4 @@
+import { UserUseCaseLegalAgeError } from '@/app/errors'
 import { type UserUseCasePort } from '@/app/port'
 import { DataServiceNotFound } from '@/infra/services/errors/data.service.error'
 import { type HttpDataResponse } from '@/shared/util/http-data-response'
@@ -46,6 +47,13 @@ export class UsersControllers {
   }
 
   private checkError (error: Error): HttpDataResponse {
+    if (error instanceof UserUseCaseLegalAgeError) {
+      return {
+        statusCode: HTTP_STATUS.BAD_REQUEST,
+        message: error.message
+      }
+    }
+
     if (error instanceof DataServiceNotFound) {
       return {
         message: error.message,

@@ -1,11 +1,11 @@
-import { type WineryUseCasePort } from '@/app/port'
+import { type WineTourismUseCasePort } from '@/app/port'
 import { DataServiceNotFound } from '@/infra/services/errors/data.service.error'
 import { type HttpDataResponse } from '@/shared/util/http-data-response'
 import { HTTP_STATUS } from '@/shared/util/http-status'
 import { type Response, type Request } from 'express'
 
-export class WineryController {
-  constructor (private readonly usecase: WineryUseCasePort) {}
+export class WineTourismController {
+  constructor (private readonly usecase: WineTourismUseCasePort) {}
 
   async create (req: Request, res: Response): Promise<void> {
     const { body } = req
