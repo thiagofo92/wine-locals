@@ -1,7 +1,7 @@
 export class DataServiceNotFound extends Error {
-  constructor () {
+  constructor (message?: string) {
     super()
     this.name = 'DataServiceNotFound'
-    this.message = 'Data not found'
+    this.message = message || 'Data not found'
   }
 }
