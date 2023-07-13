@@ -7,6 +7,7 @@ export class EventUseCase implements EventUseCasePort {
   constructor (private readonly service: EventServicePort) {}
 
   async create (input: EventAppDto): Promise<Either<Error, boolean>> {
+    input.payment = 'WAIT_PAYMENT'
     const result = await this.service.create(input)
 
     if (result.isLeft()) {
