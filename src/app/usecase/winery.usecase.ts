@@ -6,7 +6,7 @@ import { type WineryAppDto } from '../dto'
 export class WineryUseCase implements WineryUseCasePort {
   constructor (private readonly service: WineryServicePort) {}
 
-  async create (input: WineryAppDto): Promise<Either<Error, boolean>> {
+  async create (input: WineryAppDto): Promise<Either<Error, { id: number }>> {
     const result = await this.service.create(input)
 
     if (result.isLeft()) {

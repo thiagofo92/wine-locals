@@ -1,10 +1,10 @@
 import { right, type Either, left } from '@/shared/errors/either'
 import { type EventUseCasePort } from '../port'
 import { type EventAppDto } from '../dto'
-import { type EventSerivcePort } from '@/infra/services/port'
+import { type EventServicePort } from '@/infra/services/port'
 
 export class EventUseCase implements EventUseCasePort {
-  constructor (private readonly service: EventSerivcePort) {}
+  constructor (private readonly service: EventServicePort) {}
 
   async create (input: EventAppDto): Promise<Either<Error, boolean>> {
     const result = await this.service.create(input)

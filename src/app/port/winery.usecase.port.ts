@@ -2,7 +2,7 @@ import { type Either } from '@/shared/errors/either'
 import { type WineryAppDto } from '../dto'
 
 export interface WineryUseCasePort {
-  create: (input: WineryAppDto) => Promise<Either<Error, boolean>>
+  create: (input: WineryAppDto) => Promise<Either<Error, { id: number }>>
   update: (input: WineryAppDto) => Promise<Either<Error, boolean>>
   delete: (id: number) => Promise<Either<Error, boolean>>
   findById: (id: number) => Promise<Either<Error, WineryAppDto>>

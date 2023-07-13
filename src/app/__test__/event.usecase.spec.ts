@@ -1,5 +1,5 @@
 import { EventMemoryService } from '@/infra/services/memory/event.memory.service'
-import { type EventSerivcePort } from '@/infra/services/port'
+import { type EventServicePort } from '@/infra/services/port'
 import { describe, test, vi, expect } from 'vitest'
 import { type EventUseCasePort } from '../port'
 import { EventUseCase } from '../usecase'
@@ -9,7 +9,7 @@ import { type EventAppDto } from '../dto'
 
 interface Factory {
   usecase: EventUseCasePort
-  service: EventSerivcePort
+  service: EventServicePort
 }
 
 function FactoryUseCase (): Factory {
