@@ -1,0 +1,853 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "API Wine Locals",
+    "description": "API para o cadastros de experiências, vinícolas, fazer reservars e cadastrar usuário",
+    "version": "1.0.0",
+    "contact": {
+      "email": "thiago_hyd@hotmail.com"
+    }
+  },
+  "tags": [
+      {
+        "name": "Vinícolas",
+        "description": "Cadastro, listagem, atualização e exclusão"
+      },
+      {
+        "name": "Enoturismo",
+        "description": "Cadastro, listagem, atualização e exclusão"
+      },
+      {
+        "name": "Usuário",
+        "description": "Cadastro, busca e validação por email e password"
+      },
+      {
+        "name": "Evento - Reserva",
+        "description": "Cadastro e listagem"
+      }
+    ],
+    "paths": {
+      "/api/users": {
+        "post": {
+          "tags": ["Usuário"],
+          "description": "Cadastro de usuário para atulizar o sistema",
+          "requestBody": {
+            "description": "Dados para efetuar o cadastro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/UserRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Dados cadastrados com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type":"string"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/users/{id}": {
+        "get": {
+          "tags": ["Usuário"],
+          "description": "Localizar usuário usando o ID",
+          "parameters": [
+            {
+              "in": "query",
+              "name": "id",
+              "schema": {
+                "type": "string"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "",
+              "content": {
+                "application/json": {
+                  "schema" : {
+                    "$ref": "#components/schemas/UserResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro invalido"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500":{
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/users/validate": {
+        "post": {
+          "tags": ["Usuário"],
+          "description": "Validação do usuário pelo email e senha",
+          "requestBody": {
+            "description": "Email e senha para validar acesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/UserValidateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "200": {
+              "description": "Resposta se o usuário foi autorizado ou não",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/winery": {
+        "post": {
+          "tags": ["Vinícolas"],
+          "description": "Criação de vinícola",
+          "operationId": "addWinery",
+          "requestBody": {
+            "description": "Dados para efetuar o cadastro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/WineryCreateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Dados cadastrados com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type":"number"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Vinícolas"],
+          "description": "Criação de vinícola",
+          "operationId": "updateWinery",
+          "requestBody": {
+            "description": "Dados para efetuar o cadastro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/WineryUpdateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Dados cadastrados com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/winery/{id}": {
+        "get": {
+          "tags": ["Vinícolas"],
+          "description": "Localizar vinícola pelo ID",
+          "parameters": [
+            {
+              "in":"query",
+              "name": "id",
+              "schema": {
+                "type": "number"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Dados da vinícola",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#components/schemas/WineryResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/winery/list": {
+        "get": {
+          "tags": ["Vinícolas"],
+          "description": "Listar todas as vinícolas",
+          "responses": {
+            "200": {
+              "description": "Dados da vinícola",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#components/schemas/WineryListResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/wine-tourism": {
+        "post": {
+          "tags": ["Enoturismo"],
+          "description": "Criação de experiências enoturismo",
+          "operationId": "addWineTourism",
+          "requestBody": {
+            "description": "Dados para efetuar o cadastro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/WineTourismCreateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Dados cadastrados com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type":"number"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        },
+        "put": {
+          "tags": ["Enoturismo"],
+          "description": "Atualização de dados cadastro das experiências enoturismo",
+          "operationId": "updateWineTourism",
+          "requestBody": {
+            "description": "Dados para efetuar o cadastro",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/WineryUpdateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Dados cadastrados com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/wine-tourism/{id}": {
+        "get": {
+          "tags": ["Enoturismo"],
+          "description": "Localizar experiência enoturismo pelo ID",
+          "parameters": [
+            {
+              "in":"query",
+              "name": "id",
+              "schema": {
+                "type": "number"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Dados do enoturismo",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#components/schemas/WineTourismResponse"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/wine-tourism/list": {
+        "get": {
+          "tags": ["Enoturismo"],
+          "description": "Listar todas as experiências de enoturismo",
+          "responses": {
+            "200": {
+              "description": "Dados das experiências",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#components/schemas/WineTourismListResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/events": {
+        "post": {
+          "tags": ["Evento - Reserva"],
+          "description": "Cadastro evento para a experiência enoturismo",
+          "requestBody": {
+            "description": "Dados para efetuar o reserva",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#components/schemas/EventCreateRequest"
+                }
+              }
+            }
+          },
+          "responses": {
+            "201": {
+              "description": "Dados cadastrados com sucesso",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Parâmetro(s) invalido(s)"
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      },
+      "/api/events/list": {
+        "get": {
+          "tags": ["Evento - Reserva"],
+          "description": "Listar todas as reservas",
+          "responses": {
+            "200": {
+              "description": "Dados dos eventos de enoturismo",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#components/schemas/EventListResponse"
+                  }
+                }
+              }
+            },
+            "401": {
+              "description": "Usuário não autorizado"
+            },
+            "404": {
+              "description": "Página não encontrada"
+            },
+            "500": {
+              "description": "Erro interno"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "UserRequest": {
+          "type": "object",
+          "required": ["name", "cpf", "email", "password", "birthday"],
+          "properties": {
+            "name": {
+              "type": "string" 
+            },
+            "cpf": {
+              "type": "string",
+              "example": "11111111111"
+            },
+            "email":{
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "birthday": {
+              "type": "string"
+            }
+          }
+        },
+        "UserResponse": {
+          "type": "object",
+          "required": ["id", "name", "cpf", "email", "password", "birthday"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "description": "Usuário UUID"
+            },
+            "name": {
+              "type": "string" 
+            },
+            "cpf": {
+              "type": "string",
+              "example": "11111111111"
+            },
+            "email":{
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "birthday": {
+              "type": "string"
+            }
+          }
+        },
+        "UserValidateRequest": {
+          "type": "object",
+          "required": ["email", "password"],
+          "properties": {
+            "email":{
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            }
+          }
+        },
+        "WineryCreateRequest": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "site": {
+              "type": "string"
+            }
+          }
+        },
+        "WineryUpdateRequest": {
+          "type": "object",
+          "properties": {
+           "id": {
+            "type": "number"
+           },
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "site": {
+              "type": "string"
+            }
+          }
+        },
+        "WineryResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "site": {
+              "type": "string"
+            }
+          }
+        },
+        "WineryListResponse": {
+          "type": "array",
+          "items": {
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "site": {
+              "type": "string"
+            }
+          }
+        }
+        },
+        "WineTourismCreateRequest": {
+          "type": "object",
+          "properties": {
+            "idWinery": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "price": {
+              "type": "string"
+            },
+            "openDays": {
+              "type": "string",
+              "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"],
+              "description": "Dias que a experiência estará disponível"
+            },
+            "startHour": {
+              "type": "string"
+            },
+            "endHour": {
+              "type": "string"
+            },
+            "duration": {
+              "type": "string"
+            }
+          }
+        },
+        "WineTourismUpdateRequest": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "idWinery": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "price": {
+              "type": "string"
+            },
+            "openDays": {
+              "type": "string",
+              "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"],
+              "description": "Dias que a experiência estará disponível"
+            },
+            "startHour": {
+              "type": "string"
+            },
+            "endHour": {
+              "type": "string"
+            },
+            "duration": {
+              "type": "string"
+            }
+          }
+        },
+        "WineTourismResponse": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "idWinery": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "price": {
+              "type": "string"
+            },
+            "openDays": {
+              "type": "string",
+              "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"],
+              "description": "Dias que a experiência estará disponível"
+            },
+            "startHour": {
+              "type": "string"
+            },
+            "endHour": {
+              "type": "string"
+            },
+            "duration": {
+              "type": "string"
+            }
+          }
+        },
+        "WineTourismListResponse": {
+          "type": "array",
+          "items": {
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "idWinery": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "price": {
+              "type": "string"
+            },
+            "openDays": {
+              "type": "string",
+              "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"],
+              "description": "Dias que a experiência estará disponível"
+            },
+            "startHour": {
+              "type": "string"
+            },
+            "endHour": {
+              "type": "string"
+            },
+            "duration": {
+              "type": "string"
+            }
+          }
+        }
+        },
+        "EventCreateRequest": {
+          "type": "object",
+          "properties": {
+            "idUser": {
+              "type": "string"
+            },
+            "idWineTourism": {
+              "type": "number"
+            },
+            "date": {
+              "type": "string"
+            },
+            "hour": {
+              "type": "string"
+            }
+          }
+        },
+        "EventListResponse": {
+          "type": "array",
+          "items": {
+          "properties": {
+            "id": {
+              "type": "number"
+            },
+            "name": {
+              "type": "string"
+            },
+            "address": {
+              "type": "string"
+            },
+            "state": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "site": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    }
+  }
+}
