@@ -26,7 +26,8 @@ export class UserEntity {
   }
 
   hasLegalAge (): boolean {
-    const birthdayYear = new Date(this.birthday).getFullYear()
+    const [day, month, year] = this.birthday.split('/')
+    const birthdayYear = new Date(Number(year), Number(month), Number(day)).getFullYear()
     const currentlyYear = new Date().getFullYear()
     return (currentlyYear - birthdayYear) >= 18
   }
