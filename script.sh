@@ -1,0 +1,1 @@
+npm run migrate:create;node ./main/index.js
