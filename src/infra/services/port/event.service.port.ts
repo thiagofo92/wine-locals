@@ -1,7 +1,8 @@
 import { type EventEntity } from '@/core/entities'
 import { type Either } from '@/shared/errors/either'
 
-export interface EventSerivcePort {
-  create: (input: EventEntity) => Promise<Either<Error, boolean>>
+interface EventCreated { id: number }
+export interface EventServicePort {
+  create: (input: EventEntity) => Promise<Either<Error, EventCreated>>
   findAll: () => Promise<Either<Error, EventEntity[]>>
 }
