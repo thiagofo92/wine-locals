@@ -538,7 +538,9 @@
               "type": "string"
             },
             "birthday": {
-              "type": "string"
+              "type": "string",
+              "description": "A Data precisa estar no padrão BR, dia/mês/ano",
+              "example": "15/12/1992"
             }
           }
         },
