@@ -4,6 +4,7 @@ import { PrismaConnection } from './connection/connection'
 import { UserEntity } from '@/core/entities'
 import { DataServiceNotFound } from '../errors/data.service.error'
 import { Logger } from '@/shared/logs/logger'
+import { UserCreatContrainError } from '../errors/user.service.error'
 export class UserPrismaService implements UserServicePort {
   async create (input: UserEntity): Promise<Either<Error, string>> {
     try {
@@ -20,6 +21,8 @@ export class UserPrismaService implements UserServicePort {
       return right(result.uuid)
     } catch (error: any) {
       Logger.error(error.code, error.meta)
+
+      if (error.code === 'P2002') return left(new UserCreatContrainError())
       return left(error)
     }
   }
