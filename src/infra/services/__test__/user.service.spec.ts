@@ -1,13 +1,27 @@
-import { describe, expect, test, vi } from 'vitest'
-import { UserMemoryService } from '../memory/user.memory.service'
+import { beforeEach, describe, expect, test, vi } from 'vitest'
 import { UserMock } from '../__mocks__/user.service.mock'
 import { left } from '@/shared/errors/either'
 import { DataServiceNotFound } from '../errors/data.service.error'
 import { type UserEntity } from '@/core/entities'
+import { type UserServicePort } from '../port'
+import { UserPrismaService } from '../prisma'
+import { PrismaConnection } from '../prisma/connection/connection'
+
+interface Factory {
+  service: UserServicePort
+}
+
+function FactoryService (): Factory {
+  const service = new UserPrismaService()
+  return { service }
+}
 
 describe('# User service', () => {
+  beforeEach(async () => {
+    await PrismaConnection.users.deleteMany()
+  })
   test('Register user to database', async () => {
-    const service = new UserMemoryService()
+    const { service } = FactoryService()
     const user = UserMock
     const result = await service.create(user)
 
@@ -15,7 +29,7 @@ describe('# User service', () => {
   })
 
   test('Fail to register user', async () => {
-    const service = new UserMemoryService()
+    const { service } = FactoryService()
     const user = UserMock
     vi.spyOn(service, 'create').mockResolvedValueOnce(left(new Error()))
     const result = await service.create(user)
@@ -24,30 +38,26 @@ describe('# User service', () => {
   })
 
   test('Update user', async () => {
-    const service = new UserMemoryService()
-    const user = UserMock
+    const { service } = FactoryService()
+    const user = Object.create(UserMock) as UserEntity
     await service.create(user)
     user.name = 'Test'
-    user.email = 'test@test.com.br'
+    user.password = 'test'
 
     const result = await service.update(user)
     expect(result.value).toStrictEqual(true)
   })
 
   test('Not found user to update', async () => {
-    const service = new UserMemoryService()
-    const user = UserMock
-    await service.create(user)
-    user.name = 'Test'
-    user.email = 'test@test.com.br'
-
-    vi.spyOn(service, 'update').mockResolvedValueOnce(left(new DataServiceNotFound()))
+    const { service } = FactoryService()
+    const user = Object.create(UserMock)
+    user.id = '1234'
     const result = await service.update(user)
     expect(result.value).toBeInstanceOf(DataServiceNotFound)
   })
 
   test('Delete user', async () => {
-    const service = new UserMemoryService()
+    const { service } = FactoryService()
     const user = UserMock
 
     await service.create(user)
@@ -57,19 +67,16 @@ describe('# User service', () => {
   })
 
   test('User not found when try to delete', async () => {
-    const service = new UserMemoryService()
+    const { service } = FactoryService()
     const user = UserMock
 
-    vi.spyOn(service, 'delete').mockResolvedValueOnce(left(new DataServiceNotFound()))
-
-    await service.create(user)
     const result = await service.delete(user.id)
 
     expect(result.value).toBeInstanceOf(DataServiceNotFound)
   })
 
   test('Find user by id', async () => {
-    const service = new UserMemoryService()
+    const { service } = FactoryService()
     const user = UserMock
 
     await service.create(user)
@@ -79,14 +86,14 @@ describe('# User service', () => {
   })
 
   test('User not found using ID', async () => {
-    const service = new UserMemoryService()
+    const { service } = FactoryService()
 
     const result = await service.findById('asf')
     expect(result.value).toBeInstanceOf(DataServiceNotFound)
   })
 
   test('Find all user', async () => {
-    const service = new UserMemoryService()
+    const { service } = FactoryService()
     const user = UserMock
 
     await service.create(user)
@@ -96,7 +103,7 @@ describe('# User service', () => {
   })
 
   test('Valide the email and password', async () => {
-    const service = new UserMemoryService()
+    const { service } = FactoryService()
     const user = UserMock
 
     await service.create(user)
