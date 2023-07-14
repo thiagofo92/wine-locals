@@ -6,9 +6,9 @@ import { DataServiceNotFound } from '../errors/data.service.error'
 export class WineryMemoryService implements WineryServicePort {
   private readonly winery: WineryEntity[] = []
 
-  async create (input: WineryEntity): Promise<Either<Error, boolean>> {
+  async create (input: WineryEntity): Promise<Either<Error, { id: number }>> {
     this.winery.push(input)
-    return right(true)
+    return right({ id: input.id! })
   }
 
   async update (input: WineryEntity): Promise<Either<Error, boolean>> {

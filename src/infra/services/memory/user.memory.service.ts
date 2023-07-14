@@ -2,7 +2,7 @@ import { type Either, left, right } from '@/shared/errors/either'
 import { type UserServicePort } from '../port'
 import { type UserEntity } from '@/core/entities'
 import { DataServiceNotFound } from '../errors/data.service.error'
-
+import { UserValidateFail } from '../errors/user.service.error'
 export class UserMemoryService implements UserServicePort {
   private readonly users: UserEntity [] = []
   async create (input: UserEntity): Promise<Either<Error, string>> {
@@ -62,10 +62,11 @@ export class UserMemoryService implements UserServicePort {
     }
   }
 
-  async validate (email: string, password: string): Promise<Either<Error, boolean>> {
+  async validate (email: string, password: string): Promise<Either<Error, string>> {
     try {
       const user = this.users.find(item => item.email === email && item.password === password)
-      return right(!!user)
+      if (!user) return left(new UserValidateFail())
+      return right(user.id)
     } catch (error: any) {
       return left(error)
     }
