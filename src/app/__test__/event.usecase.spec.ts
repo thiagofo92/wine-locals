@@ -6,11 +6,20 @@ import { EventUseCase } from '../usecase'
 import { EventAppDtoMock } from '../__mocks__/event.app.mock'
 import { left } from '@/shared/errors/either'
 import { type EventAppDto } from '../dto'
+import { randomUUID } from 'crypto'
 
 interface Factory {
   usecase: EventUseCasePort
   service: EventServicePort
 }
+const requestInfo = { data: '', requestId: randomUUID() }
+vi.mock('@/shared/util/async-hook', () => {
+  return {
+    Context: {
+      get: vi.fn(() => requestInfo)
+    }
+  }
+})
 
 function FactoryUseCase (): Factory {
   const service = new EventMemoryService()

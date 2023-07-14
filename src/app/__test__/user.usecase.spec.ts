@@ -7,19 +7,27 @@ import { UserUseCaseLegalAgeError } from '../errors'
 import { type UserServicePort } from '@/infra/services/port'
 import { left } from '@/shared/errors/either'
 import { DataServiceNotFound } from '@/infra/services/errors/data.service.error'
-
+import { UserValidateFail } from '@/infra/services/errors/user.service.error'
+import { randomUUID } from 'crypto'
 interface Factory {
   usecase: UserUseCase
   service: UserServicePort
 }
 
+const requestInfo = { data: '', requestId: randomUUID() }
+vi.mock('@/shared/util/async-hook', () => {
+  return {
+    Context: {
+      get: vi.fn(() => requestInfo)
+    }
+  }
+})
 function FactoryUseCase (): Factory {
   const service = new UserMemoryService()
   const usecase = new UserUseCase(service)
 
   return { service, usecase }
 }
-
 describe('# UserUsecase test', () => {
   test('Create a new user', async () => {
     const { usecase } = FactoryUseCase()
@@ -27,7 +35,7 @@ describe('# UserUsecase test', () => {
 
     const result = await usecase.create(input)
     const value = result.value as string
-    expect(value.length).toBeGreaterThan(35)
+    expect(value).toStrictEqual(input.id)
   })
 
   test('User dont has the legal age', async () => {
@@ -87,8 +95,8 @@ describe('# UserUsecase test', () => {
     await usecase.create(input)
     const result = await usecase.validate(input.email, input.password)
 
-    const value = result.value as boolean
-    expect(value).toStrictEqual(true)
+    const value = result.value as string
+    expect(value).not.toBeInstanceOf(UserValidateFail)
   })
 
   test('Email or password not match in database', async () => {
@@ -98,8 +106,8 @@ describe('# UserUsecase test', () => {
     await usecase.create(input)
     const result = await usecase.validate('', '')
 
-    const value = result.value as boolean
-    expect(value).toStrictEqual(false)
+    const value = result.value
+    expect(value).toBeInstanceOf(UserValidateFail)
   })
 
   test('Error to try validate the user password and user email', async () => {
@@ -108,7 +116,7 @@ describe('# UserUsecase test', () => {
     vi.spyOn(service, 'validate').mockResolvedValueOnce(left(new Error('Test validate the user email and user password')))
     const result = await usecase.validate('', '')
 
-    const value = result.value as boolean
+    const value = result.value
     expect(value).toBeInstanceOf(Error)
   })
 })

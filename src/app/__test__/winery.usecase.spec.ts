@@ -7,11 +7,20 @@ import { WineryAppDtoMock } from '../__mocks__/winery.app.mock'
 import { left } from '@/shared/errors/either'
 import { type WineryAppDto } from '../dto'
 import { DataServiceNotFound } from '@/infra/services/errors/data.service.error'
+import { randomUUID } from 'crypto'
 
 interface Factory {
   usecase: WineryUseCasePort
   service: WineryServicePort
 }
+const requestInfo = { data: '', requestId: randomUUID() }
+vi.mock('@/shared/util/async-hook', () => {
+  return {
+    Context: {
+      get: vi.fn(() => requestInfo)
+    }
+  }
+})
 
 function FactoryUseCase (): Factory {
   const service = new WineryMemoryService()
@@ -23,16 +32,16 @@ function FactoryUseCase (): Factory {
 describe('# Winery usecase', () => {
   test('Create winery', async () => {
     const { usecase } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
-    const result = await usecase.create(wineryMock)
-
-    expect(result.value).toStrictEqual(true)
+    await usecase.create(wineryMock)
+    const winery = await usecase.findById(wineryMock.id!)
+    expect(winery.value).toStrictEqual(wineryMock)
   })
 
   test('Error to create the winery', async () => {
     const { usecase, service } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     vi.spyOn(service, 'create').mockResolvedValueOnce(left(new Error('Test winery usecase')))
 
@@ -43,7 +52,7 @@ describe('# Winery usecase', () => {
 
   test('Update the winery', async () => {
     const { usecase } = FactoryUseCase()
-    const wineryMock = Object.create(WineryAppDtoMock) as WineryAppDto
+    const wineryMock = WineryAppDtoMock()
 
     await usecase.create(wineryMock)
     wineryMock.name = 'Test winery case'
@@ -56,7 +65,7 @@ describe('# Winery usecase', () => {
 
   test('Error to update the winery - Winery not found', async () => {
     const { usecase } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     const result = await usecase.update(wineryMock)
 
@@ -65,7 +74,7 @@ describe('# Winery usecase', () => {
 
   test('Error to update the winery - Service error', async () => {
     const { usecase, service } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     vi.spyOn(service, 'update').mockResolvedValueOnce(left(new Error('Test usecase winery update')))
 
@@ -76,7 +85,7 @@ describe('# Winery usecase', () => {
 
   test('Find the winery by ID', async () => {
     const { usecase } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     await usecase.create(wineryMock)
 
@@ -87,7 +96,7 @@ describe('# Winery usecase', () => {
 
   test('Error to find winery by ID - ID not found', async () => {
     const { usecase } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     const result = await usecase.findById(wineryMock.id!)
 
@@ -96,7 +105,7 @@ describe('# Winery usecase', () => {
 
   test('Error to find winery by ID - Service Error', async () => {
     const { usecase, service } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     vi.spyOn(service, 'findById').mockResolvedValueOnce(left(new Error('Test case winery find by ID')))
     const result = await usecase.findById(wineryMock.id!)
@@ -106,7 +115,7 @@ describe('# Winery usecase', () => {
 
   test('Success to delete the winery', async () => {
     const { usecase } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     await usecase.create(wineryMock)
     const result = await usecase.delete(wineryMock.id!)
@@ -118,7 +127,7 @@ describe('# Winery usecase', () => {
 
   test('Error to delete the winery - ID not found', async () => {
     const { usecase } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     const result = await usecase.delete(wineryMock.id!)
 
@@ -127,7 +136,7 @@ describe('# Winery usecase', () => {
 
   test('Error to delete the winery - Service error', async () => {
     const { usecase, service } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     vi.spyOn(service, 'delete').mockResolvedValueOnce(left(new Error('Test case delete the winery')))
     const result = await usecase.delete(wineryMock.id!)
@@ -137,7 +146,7 @@ describe('# Winery usecase', () => {
 
   test('Success to get all winery', async () => {
     const { usecase } = FactoryUseCase()
-    const wineryMock = WineryAppDtoMock
+    const wineryMock = WineryAppDtoMock()
 
     await usecase.create(wineryMock)
     const result = await usecase.findAll()
