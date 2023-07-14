@@ -6,7 +6,7 @@ import { eventFactoryController } from './factory-controller/event.factory.contr
 import { UserCreateMiddleware, UserValidateMiddleware, UserByIdMiddleware } from '../middlewares/schema/user.schema'
 import {
   WineTourismByIdMiddleware, EventCreateMiddleware, WineTourismUpdateMiddleware,
-  WineryByIdMiddleware, WineryCreateMiddleware, WineryUpdateMiddleware
+  WineryByIdMiddleware, WineryCreateMiddleware, WineryUpdateMiddleware, WineTourismCreateMiddleware
 } from '../middlewares/schema'
 import { validate } from '../middlewares/auth/auth.jwt.middleware'
 
@@ -31,7 +31,7 @@ export class RoutersServer {
 
   private wineTourism (): void {
     const controller = wineTourismFactoryController()
-    this.router.post('/wine-tourism', validate, EventCreateMiddleware, controller.create.bind(controller))
+    this.router.post('/wine-tourism', WineTourismCreateMiddleware, controller.create.bind(controller))
     this.router.put('/wine-tourism', validate, WineTourismUpdateMiddleware, controller.update.bind(controller))
     this.router.get('/wine-tourism', validate, WineTourismByIdMiddleware, controller.findById.bind(controller))
     this.router.delete('/wine-tourism', validate, WineTourismByIdMiddleware, controller.delete.bind(controller))

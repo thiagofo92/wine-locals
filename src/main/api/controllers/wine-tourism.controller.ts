@@ -13,6 +13,7 @@ export class WineTourismController {
     const context = Context.get()
     Logger.info('Controller - Create new Wine Tourism', { requestId: context.requestId })
     const { body } = req
+
     const result = await this.usecase.create(body)
     if (result.isLeft()) {
       const error = this.checkError(result.value)
