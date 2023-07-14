@@ -8,5 +8,5 @@ export const UserAppMock: UserAppDto = {
   email: faker.internet.email(),
   password: faker.internet.password(),
   cpf: faker.string.numeric({ length: 11 }),
-  birthday: faker.date.birthdate().toUTCString()
+  birthday: faker.date.birthdate().toLocaleDateString()
 }
