@@ -1,4 +1,4 @@
-import { WineTourismEntity } from '@/core/entities'
+import { type WineTourismEntity } from '@/core/entities'
 import { right, type Either, left } from '@/shared/errors/either'
 import { type WineTourismServicePort } from '../port'
 import { Logger } from '@/shared/logs/logger'
@@ -93,7 +93,7 @@ export class WineTourismPrismaService implements WineTourismServicePort {
         duration: result.duration,
         endHour: result.end_hour,
         startHour: result.start_hour,
-        openDays: WineTourismEntity.Week[result.open_days],
+        openDays: result.open_days,
         price: result.price.toFixed(2)
       }
 
@@ -116,7 +116,7 @@ export class WineTourismPrismaService implements WineTourismServicePort {
         endHour: item.end_hour,
         startHour: item.start_hour,
         idWinery: item.id_winery,
-        openDays: WineTourismEntity.Week[item.open_days],
+        openDays: item.open_days,
         price: item.price.toFixed(2)
       }))
 
