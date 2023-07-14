@@ -31,7 +31,7 @@
         "post": {
           "tags": ["Usuário"],
           "operationId": "createUser",
-          "description": "Cadastro de usuário para atulizar o sistema",
+          "description": "Cadastro do usuário",
           "requestBody": {
             "description": "Dados para efetuar o cadastro",
             "content": {
@@ -52,6 +52,9 @@
                     "properties": {
                       "id": {
                         "type":"string"
+                      },
+                      "token": {
+                        "type": "string"
                       }
                     }
                   }
@@ -130,12 +133,18 @@
           },
           "responses": {
             "200": {
-              "description": "Token JWT do usuário",
+              "description": "UUID do usuário, o token valido é devolvido no Header: x-access-token",
               "content": {
                 "application/json": {
                   "schema": {
-                    "type": "string",
-                    "description": "Token JWT"
+                   "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "token": {
+                      "type": "string"
+                    }
+                   }
                   }
                 }
               }
@@ -371,7 +380,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#components/schemas/WineryUpdateRequest"
+                  "$ref": "#components/schemas/WineTourismUpdateRequest"
                 }
               }
             }
@@ -730,13 +739,16 @@
               "description": "Dias que a experiência estará disponível"
             },
             "startHour": {
-              "type": "string"
+              "type": "string",
+              "example": "13h30"
             },
             "endHour": {
-              "type": "string"
+              "type": "string",
+              "example": "16h40"
             },
             "duration": {
-              "type": "string"
+              "type": "string",
+              "example": "1h30"
             }
           }
         },
@@ -756,21 +768,28 @@
               "type": "string"
             },
             "price": {
-              "type": "string"
+              "type": "string",
+              "example": "10.50"
             },
             "openDays": {
-              "type": "string",
-              "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"],
-              "description": "Dias que a experiência estará disponível"
+              "type": "array",
+              "example": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"],
+              "items": {
+                "type": "string",
+                "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"]
+              }
             },
             "startHour": {
-              "type": "string"
+              "type": "string",
+              "example": "13h30"
             },
             "endHour": {
-              "type": "string"
+              "type": "string",
+              "example": "16h40"
             },
             "duration": {
-              "type": "string"
+              "type": "string",
+              "example": "1h30"
             }
           }
         },
