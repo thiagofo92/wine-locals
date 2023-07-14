@@ -28,7 +28,7 @@ export class UsersControllers {
 
     const token = generateTokenJWT(result.value)
     res.setHeader('x-access-token', token)
-    res.status(HTTP_STATUS.CREATED).json(result.value)
+    res.status(HTTP_STATUS.CREATED).json({ id: result.value, token })
   }
 
   async findById (req: Request, res: Response): Promise<void> {
@@ -55,13 +55,15 @@ export class UsersControllers {
     const result = await this.usecase.validate(email, password)
 
     if (result.isLeft()) {
-      res.status(500).json({ message: 'internal error' })
+      const error = this.checkError(result.value)
+      res.status(error.statusCode).json(error.message)
       return
     }
 
     Logger.info('Controller - User success to validate', { requestId: context.requestId })
     const token = generateTokenJWT(result.value)
-    res.status(HTTP_STATUS.OK).json(token)
+    res.setHeader('x-access-token', token)
+    res.status(HTTP_STATUS.OK).json({ id: result.value, token })
   }
 
   private checkError (error: Error): HttpDataResponse {
