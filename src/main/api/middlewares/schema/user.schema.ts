@@ -1,4 +1,5 @@
 import { Logger } from '@/shared/logs/logger'
+import { Context } from '@/shared/util/async-hook'
 import { HTTP_STATUS } from '@/shared/util/http-status'
 import { type NextFunction, type Request, type Response } from 'express'
 import * as Yup from 'yup'
@@ -13,7 +14,8 @@ const UserSchema = Yup.object({
 
 export function UserCreateMiddleware (req: Request, res: Response, next: NextFunction): void {
   const { body } = req
-  Logger.info('Start create person - Middleware')
+  const context = Context.get()
+  Logger.info('Middleware - User create', { requestId: context.requestId })
 
   UserSchema.validate(body, { abortEarly: false })
     .then(_ => { next() })
@@ -21,13 +23,14 @@ export function UserCreateMiddleware (req: Request, res: Response, next: NextFun
       const params: string = errors.map((item: any) => item).join(', ')
       const message = `Invalid parameter ${params}`
       res.status(HTTP_STATUS.BAD_REQUEST).json(message)
-      Logger.warn(message)
+      Logger.warn(message, { requestId: context.requestId })
     })
 }
 const UserValidateSchema = UserSchema.pick(['email', 'password'])
 export function UserValidateMiddleware (req: Request, res: Response, next: NextFunction): void {
   const { body } = req
-  Logger.info('Start create person - Middleware')
+  const context = Context.get()
+  Logger.info('Middleware - User valid by email and password', { requestId: context.requestId })
 
   UserValidateSchema.validate(body, { abortEarly: false })
     .then(_ => { next() })
@@ -35,7 +38,7 @@ export function UserValidateMiddleware (req: Request, res: Response, next: NextF
       const params: string = errors.map((item: any) => item).join(', ')
       const message = `Invalid parameter ${params}`
       res.status(HTTP_STATUS.BAD_REQUEST).json(message)
-      Logger.warn(message)
+      Logger.warn(message, { requestId: context.requestId })
     })
 }
 
@@ -45,7 +48,8 @@ const UserFindByIdSchema = Yup.object({
 
 export function UserByIdMiddleware (req: Request, res: Response, next: NextFunction): void {
   const { query } = req
-  Logger.info('Start create person - Middleware')
+  const context = Context.get()
+  Logger.info('Middleware - User find by ID', { requestId: context.requestId })
 
   UserFindByIdSchema.validate(query, { abortEarly: false })
     .then(_ => { next() })
@@ -53,6 +57,6 @@ export function UserByIdMiddleware (req: Request, res: Response, next: NextFunct
       const params: string = errors.map((item: any) => item).join(', ')
       const message = `Invalid parameter ${params}`
       res.status(HTTP_STATUS.BAD_REQUEST).json(message)
-      Logger.warn(message)
+      Logger.warn(message, { requestId: context.requestId })
     })
 }

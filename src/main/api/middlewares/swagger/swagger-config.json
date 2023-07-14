@@ -721,8 +721,12 @@
               "type": "string"
             },
             "openDays": {
-              "type": "string",
-              "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"],
+              "type": "array",
+              "example": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"],
+              "items": {
+                "type": "string",
+                "enum": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "All"]
+              },
               "description": "Dias que a experiência estará disponível"
             },
             "startHour": {
