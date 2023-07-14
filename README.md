@@ -12,10 +12,11 @@ API responsável por gerenciar vinícolas, experiências enoturisticas
 * Instalar o Docker [Docker link](https://docs.docker.com/desktop/install/windows-install/)
 * Instalar o Docker composer [Docker Compose Link](https://docs.docker.com/compose/install/)
 * Efetue a instalação do **node_modules** usando **npm install** ou **yarn**
-* Execute o commando **npx run test** ou **yarn test** para verificar se está tudo funcionando## Como executar
 * Execute o comando **npm run build** ou **yarn build** para criar o a pasta **dist**, será a pasta de produção
 * Executar o comando **docker-compose up -d** para criar o container com o Docker
-* É necessário ao menos ter o container do banco de dados
+* Executar o commando **npx prisma db seed** ou **yarn prisma db seed**
+* Execute o commando **npx run test** ou **yarn test** para verificar se está tudo funcionando
+* É necessário ao menos ter o container do banco de dados ou um banco mysql criado, caso tenha outro mysql configura, será necessário editar o arquivo .env e colocar as configurações do banco
 
 ## Detalhes sobre a API
 
