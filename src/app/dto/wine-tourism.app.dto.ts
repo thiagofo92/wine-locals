@@ -1,3 +1,23 @@
-import { type WineTourismEntity } from '@/core/entities'
+export interface WineTourismAppDto {
+  id?: number
+  idWinery: number
+  name: string
+  description: string
+  price: string
+  openDays: string[]
+  startHour: string
+  endHour: string
+  duration: string
+}
 
-export type WineTourismAppDto = WineTourismEntity
+export interface WineTourismAppDtoOutPut {
+  id?: number
+  idWinery: number
+  name: string
+  description: string
+  price: string
+  openDays: string
+  startHour: string
+  endHour: string
+  duration: string
+}
