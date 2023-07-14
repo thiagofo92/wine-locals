@@ -25,7 +25,7 @@ export class UserUseCase implements UserUseCasePort {
     return right(result.value)
   }
 
-  async validate (email: string, password: string): Promise<Either<Error, boolean>> {
+  async validate (email: string, password: string): Promise<Either<Error, string>> {
     const context = Context.get()
     Logger.info('UseCase - User validate', { requestId: context.requestId })
     const result = await this.service.validate(email, password)

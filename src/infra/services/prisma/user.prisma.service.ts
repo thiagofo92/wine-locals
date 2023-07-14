@@ -4,7 +4,7 @@ import { PrismaConnection } from './connection/connection'
 import { UserEntity } from '@/core/entities'
 import { DataServiceNotFound } from '../errors/data.service.error'
 import { Logger } from '@/shared/logs/logger'
-import { UserCreatContrainError } from '../errors/user.service.error'
+import { UserCreatContrainError, UserValidateFail } from '../errors/user.service.error'
 import { Context } from '@/shared/util/async-hook'
 export class UserPrismaService implements UserServicePort {
   async create (input: UserEntity): Promise<Either<Error, string>> {
@@ -116,7 +116,7 @@ export class UserPrismaService implements UserServicePort {
     }
   }
 
-  async validate (email: string, password: string): Promise<Either<Error, boolean>> {
+  async validate (email: string, password: string): Promise<Either<Error, string>> {
     try {
       const result = await PrismaConnection.users.findFirst({
         where: {
@@ -125,9 +125,9 @@ export class UserPrismaService implements UserServicePort {
         }
       })
 
-      if (!result) return right(false)
+      if (!result) return left(new UserValidateFail())
 
-      return right(true)
+      return right(result.uuid)
     } catch (error: any) {
       const context = Context.get()
       Logger.error(error.code, { message: error.meta, requestId: context.requestId })

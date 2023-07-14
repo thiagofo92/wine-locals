@@ -7,5 +7,5 @@ export interface UserServicePort {
   delete: (id: string) => Promise<Either<Error, boolean>>
   findById: (id: string) => Promise<Either<Error, UserEntity>>
   findAll: () => Promise<Either<Error, UserEntity[]>>
-  validate: (email: string, password: string) => Promise<Either<Error, boolean>>
+  validate: (email: string, password: string) => Promise<Either<Error, string>>
 }

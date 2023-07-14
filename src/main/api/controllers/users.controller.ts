@@ -1,7 +1,7 @@
 import { UserUseCaseLegalAgeError } from '@/app/errors'
 import { type UserUseCasePort } from '@/app/port'
 import { DataServiceNotFound } from '@/infra/services/errors/data.service.error'
-import { UserCreatContrainError } from '@/infra/services/errors/user.service.error'
+import { UserCreatContrainError, UserValidateFail } from '@/infra/services/errors/user.service.error'
 import { generateTokenJWT } from '@/shared/jwt/jwt'
 import { Logger } from '@/shared/logs/logger'
 import { Context } from '@/shared/util/async-hook'
@@ -59,7 +59,9 @@ export class UsersControllers {
       return
     }
 
-    res.status(HTTP_STATUS.INTERNAL_SERVER_ERROR).json(result)
+    Logger.info('Controller - User success to validate', { requestId: context.requestId })
+    const token = generateTokenJWT(result.value)
+    res.status(HTTP_STATUS.OK).json(token)
   }
 
   private checkError (error: Error): HttpDataResponse {
@@ -71,6 +73,13 @@ export class UsersControllers {
     }
 
     if (error instanceof UserCreatContrainError) {
+      return {
+        statusCode: HTTP_STATUS.BAD_REQUEST,
+        message: error.message
+      }
+    }
+
+    if (error instanceof UserValidateFail) {
       return {
         statusCode: HTTP_STATUS.BAD_REQUEST,
         message: error.message
