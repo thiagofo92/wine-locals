@@ -19,7 +19,9 @@ API responsável por gerenciar vinícolas, experiências enoturisticas
 
 ## Detalhes sobre a API
 
-* Efetuar o cadastro e um usuário para recuperar o token e usar para acessar as outras rotas
+* Efetuar o cadastro do usuário para recuperar o token e usar para acessar as outras rotas
+* Para poder criar um enoturismo é necessário ter uma vinícola pré cadastrada
+* Para poder criar um evento é preciso ter um enoturismo cadastrado
 * A Api possui uma rota para acessar a documentação do swagger http://servidor:porta/api-docs
 * Respostas de Sucesso
   * true
