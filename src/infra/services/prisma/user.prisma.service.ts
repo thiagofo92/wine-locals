@@ -22,7 +22,8 @@ export class UserPrismaService implements UserServicePort {
       return right(result.uuid)
     } catch (error: any) {
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
 
       if (error.code === 'P2002') return left(new UserCreatContrainError())
       return left(error)
@@ -92,7 +93,8 @@ export class UserPrismaService implements UserServicePort {
       return right(user)
     } catch (error: any) {
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
       return left(error)
     }
   }
@@ -130,7 +132,8 @@ export class UserPrismaService implements UserServicePort {
       return right(result.uuid)
     } catch (error: any) {
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
       return left(error)
     }
   }

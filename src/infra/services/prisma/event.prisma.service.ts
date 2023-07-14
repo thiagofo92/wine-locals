@@ -36,7 +36,8 @@ export class EventPrismaService implements EventServicePort {
       return right({ id: result.id })
     } catch (error: any) {
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
       return left(error)
     }
   }
@@ -45,7 +46,7 @@ export class EventPrismaService implements EventServicePort {
     try {
       const result = await PrismaConnection.$queryRaw<CustomEventPrisma[]>`
       SELECT event.id, event.id_winery_tourism, event.date, event.hour, event.payment, users.uuid as id_user
-      FROM wine-locals.event
+      FROM event
       INNER JOIN users ON users.id = event.id_user;`
       const event = result.map<EventEntity>(item => ({
         id: item.id,
@@ -59,7 +60,8 @@ export class EventPrismaService implements EventServicePort {
       return right(event)
     } catch (error: any) {
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
       return left(error)
     }
   }

@@ -26,8 +26,8 @@ export class WineTourismPrismaService implements WineTourismServicePort {
       return right({ id: result.id })
     } catch (error: any) {
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
-
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
       return left(error)
     }
   }
@@ -54,7 +54,10 @@ export class WineTourismPrismaService implements WineTourismServicePort {
       if (error.code === 'P2025') return left(new DataServiceNotFound())
 
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
+
       return left(error)
     }
   }
@@ -70,7 +73,8 @@ export class WineTourismPrismaService implements WineTourismServicePort {
       if (error.code === 'P2025') return left(new DataServiceNotFound())
 
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
       return left(error)
     }
   }
@@ -100,7 +104,8 @@ export class WineTourismPrismaService implements WineTourismServicePort {
       return right(winery)
     } catch (error: any) {
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
       return left(error)
     }
   }
@@ -123,7 +128,8 @@ export class WineTourismPrismaService implements WineTourismServicePort {
       return right(winery)
     } catch (error: any) {
       const context = Context.get()
-      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
+      const message = error.code || error.name
+      Logger.error(message, [{ message: error.meta, requestId: context.requestId }, { message: error.message }])
       return left(error)
     }
   }
