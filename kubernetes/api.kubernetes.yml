@@ -23,4 +23,4 @@ spec:
         - containerPort: 4568
         env:
           - name: DATABASE_URL
-            value: "mysql://root:senha_root_123@10.43.135.30:3306/wine-locals"
+            value: "mysql://root:senha_root_123@wine-locals-db:3306/wine-locals"
