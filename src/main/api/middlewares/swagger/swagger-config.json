@@ -30,6 +30,7 @@
       "/api/users": {
         "post": {
           "tags": ["Usuário"],
+          "operationId": "createUser",
           "description": "Cadastro de usuário para atulizar o sistema",
           "requestBody": {
             "description": "Dados para efetuar o cadastro",
@@ -70,11 +71,10 @@
               "description": "Erro interno"
             }
           }
-        }
-      },
-      "/api/users/{id}": {
+        },
         "get": {
           "tags": ["Usuário"],
+          "operationId": "finbydIdUser",
           "description": "Localizar usuário usando o ID",
           "parameters": [
             {
@@ -108,7 +108,10 @@
             "500":{
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token": []
+          }]
         }
       },
       "/api/users/validate": {
@@ -127,11 +130,12 @@
           },
           "responses": {
             "200": {
-              "description": "Resposta se o usuário foi autorizado ou não",
+              "description": "Token JWT do usuário",
               "content": {
                 "application/json": {
                   "schema": {
-                    "type": "boolean"
+                    "type": "string",
+                    "description": "Token JWT"
                   }
                 }
               }
@@ -191,7 +195,10 @@
             "500": {
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token": []
+          }]
         },
         "put": {
           "tags": ["Vinícolas"],
@@ -230,13 +237,15 @@
             "500": {
               "description": "Erro interno"
             }
-          }
-        }
-      },
-      "/api/winery/{id}": {
+          },
+          "security": [{
+            "api-token": []
+          }]
+        },
         "get": {
           "tags": ["Vinícolas"],
           "description": "Localizar vinícola pelo ID",
+          "operationId": "findBYId",
           "parameters": [
             {
               "in":"query",
@@ -269,7 +278,10 @@
             "500": {
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token": []
+          }]
         }
       },
       "/api/winery/list": {
@@ -296,7 +308,10 @@
             "500": {
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token": []
+          }]
         }
       },
       "/api/wine-tourism": {
@@ -342,7 +357,10 @@
             "500": {
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token": []
+          }]
         },
         "put": {
           "tags": ["Enoturismo"],
@@ -381,12 +399,14 @@
             "500": {
               "description": "Erro interno"
             }
-          }
-        }
-      },
-      "/api/wine-tourism/{id}": {
+          },
+          "security": [{
+            "api-token": []
+          }]
+        },
         "get": {
           "tags": ["Enoturismo"],
+          "operationId": "findBYId",
           "description": "Localizar experiência enoturismo pelo ID",
           "parameters": [
             {
@@ -420,7 +440,10 @@
             "500": {
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token": []
+          }]
         }
       },
       "/api/wine-tourism/list": {
@@ -447,7 +470,10 @@
             "500": {
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token":[]
+          }]
         }
       },
       "/api/events": {
@@ -487,7 +513,10 @@
             "500": {
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token": []
+          }]
         }
       },
       "/api/events/list": {
@@ -514,7 +543,10 @@
             "500": {
               "description": "Erro interno"
             }
-          }
+          },
+          "security": [{
+            "api-token": []
+          }]
         }
       }
     },
@@ -849,6 +881,13 @@
             }
           }
         }
+      }
+    },
+    "securitySchemes": {
+      "api-token": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-access-token"
       }
     }
   }
