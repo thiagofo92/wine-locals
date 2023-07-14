@@ -5,6 +5,7 @@ import { UserEntity } from '@/core/entities'
 import { DataServiceNotFound } from '../errors/data.service.error'
 import { Logger } from '@/shared/logs/logger'
 import { UserCreatContrainError } from '../errors/user.service.error'
+import { Context } from '@/shared/util/async-hook'
 export class UserPrismaService implements UserServicePort {
   async create (input: UserEntity): Promise<Either<Error, string>> {
     try {
@@ -20,7 +21,8 @@ export class UserPrismaService implements UserServicePort {
       })
       return right(result.uuid)
     } catch (error: any) {
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
 
       if (error.code === 'P2002') return left(new UserCreatContrainError())
       return left(error)
@@ -89,7 +91,8 @@ export class UserPrismaService implements UserServicePort {
 
       return right(user)
     } catch (error: any) {
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }
@@ -126,7 +129,8 @@ export class UserPrismaService implements UserServicePort {
 
       return right(true)
     } catch (error: any) {
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }

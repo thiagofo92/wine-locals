@@ -4,6 +4,7 @@ import { type WineryServicePort } from '../port'
 import { Logger } from '@/shared/logs/logger'
 import { PrismaConnection } from './connection/connection'
 import { DataServiceNotFound } from '../errors/data.service.error'
+import { Context } from '@/shared/util/async-hook'
 
 interface WineCreated { id: number }
 
@@ -15,7 +16,8 @@ export class WineryPrismaService implements WineryServicePort {
       })
       return right({ id: result.id })
     } catch (error: any) {
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }
@@ -32,7 +34,8 @@ export class WineryPrismaService implements WineryServicePort {
     } catch (error: any) {
       if (error.code === 'P2025') return left(new DataServiceNotFound())
 
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }
@@ -47,7 +50,8 @@ export class WineryPrismaService implements WineryServicePort {
     } catch (error: any) {
       if (error.code === 'P2025') return left(new DataServiceNotFound())
 
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }
@@ -64,7 +68,8 @@ export class WineryPrismaService implements WineryServicePort {
 
       return right(result)
     } catch (error: any) {
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }
@@ -74,7 +79,8 @@ export class WineryPrismaService implements WineryServicePort {
       const result = await PrismaConnection.winery.findMany()
       return right(result)
     } catch (error: any) {
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }

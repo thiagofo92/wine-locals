@@ -4,6 +4,7 @@ import { type EventServicePort } from '../port'
 import { Logger } from '@/shared/logs/logger'
 import { PrismaConnection } from './connection/connection'
 import { DataServiceNotFound } from '../errors/data.service.error'
+import { Context } from '@/shared/util/async-hook'
 
 interface EventCreated { id: number }
 interface CustomEventPrisma {
@@ -34,7 +35,8 @@ export class EventPrismaService implements EventServicePort {
 
       return right({ id: result.id })
     } catch (error: any) {
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }
@@ -56,7 +58,8 @@ export class EventPrismaService implements EventServicePort {
 
       return right(event)
     } catch (error: any) {
-      Logger.error(error.code, error.meta)
+      const context = Context.get()
+      Logger.error(error.code, { message: error.meta, requestId: context.requestId })
       return left(error)
     }
   }

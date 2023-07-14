@@ -4,6 +4,7 @@ import { DataServiceNotFound } from '@/infra/services/errors/data.service.error'
 import { UserCreatContrainError } from '@/infra/services/errors/user.service.error'
 import { generateTokenJWT } from '@/shared/jwt/jwt'
 import { Logger } from '@/shared/logs/logger'
+import { Context } from '@/shared/util/async-hook'
 import { type HttpDataResponse } from '@/shared/util/http-data-response'
 import { HTTP_STATUS } from '@/shared/util/http-status'
 import { type Request, type Response } from 'express'
@@ -12,22 +13,28 @@ export class UsersControllers {
   constructor (private readonly usecase: UserUseCasePort) {}
 
   async create (req: Request, res: Response): Promise<void> {
+    const context = Context.get()
+    Logger.info('User controller create new user', { requestId: context.requestId })
+
     const { body } = req
     const result = await this.usecase.create(body)
 
     if (result.isLeft()) {
-      Logger.error(result.value)
       const error = this.checkError(result.value)
       res.status(error.statusCode).json({ message: error.message })
       return
     }
+    Logger.info('Success to create the user', { requestId: context.requestId })
+
     const token = generateTokenJWT(result.value)
     res.setHeader('x-access-token', token)
-
     res.status(HTTP_STATUS.CREATED).json(result.value)
   }
 
   async findById (req: Request, res: Response): Promise<void> {
+    const context = Context.get()
+    Logger.info('User controller create new user', { requestId: context.requestId })
+
     const { query } = req
     const result = await this.usecase.findById(String(query.id))
 
@@ -41,6 +48,8 @@ export class UsersControllers {
   }
 
   async validate (req: Request, res: Response): Promise<void> {
+    const context = Context.get()
+    Logger.info('User controller create new user', { requestId: context.requestId })
     const { email, password } = req.body
 
     const result = await this.usecase.validate(email, password)
