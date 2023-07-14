@@ -1,3 +1,4 @@
-import { StartServer } from "./api";
+import 'dotenv/config'
+import { StartServer } from './api'
 
 StartServer()
