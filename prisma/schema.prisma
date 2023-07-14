@@ -13,7 +13,7 @@ model event {
   id_winery_tourism Int
   date              String       @db.VarChar(10)
   hour              String       @db.VarChar(5)
-  payment           String       @db.VarChar(10)
+  payment           String       @db.VarChar(15)
   users             users        @relation(fields: [id_user], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "id_user_fk")
   wine_tourism      wine_tourism @relation(fields: [id_winery_tourism], references: [id_winery], onDelete: NoAction, onUpdate: NoAction, map: "id_wine_tourism_fk")
 
