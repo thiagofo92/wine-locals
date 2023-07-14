@@ -40,7 +40,7 @@ model wine_tourism {
   name        String                 @db.VarChar(20)
   description String                 @db.Text
   price       Decimal                @db.Decimal(10, 2)
-  open_days   wine_tourism_open_days
+  open_days   String                 @db.VarChar(80)
   start_hour  String                 @db.VarChar(5)
   end_hour    String                 @db.VarChar(5)
   duration    String                 @db.VarChar(5)
@@ -58,15 +58,4 @@ model winery {
   city         String         @db.VarChar(25)
   site         String         @db.VarChar(30)
   wine_tourism wine_tourism[]
-}
-
-enum wine_tourism_open_days {
-  Monday
-  Tuesday
-  Wednesday
-  Thursday
-  Friday
-  Saturday
-  Sunday
-  All
 }
