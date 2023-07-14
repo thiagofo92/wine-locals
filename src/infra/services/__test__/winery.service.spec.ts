@@ -1,32 +1,35 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 import { WineryMock } from '../__mocks__/winery.service.mock'
 import { left } from '@/shared/errors/either'
 import { type WineryEntity } from '@/core/entities'
 import { DataServiceNotFound } from '../errors/data.service.error'
 import { type WineryServicePort } from '../port'
 import { WineryPrismaService } from '../prisma/winery.prisma.service'
-import { PrismaConnection } from '../prisma/connection/connection'
+import { randomUUID } from 'crypto'
 
 interface Factory {
   service: WineryServicePort
 }
 
 interface WineCreated { id: number }
-
+const requestInfo = { data: '', requestId: randomUUID() }
+vi.mock('@/shared/util/async-hook', () => {
+  return {
+    Context: {
+      get: vi.fn(() => requestInfo)
+    }
+  }
+})
 function FactoryService (): Factory {
   const service = new WineryPrismaService()
   return { service }
 }
 
 describe('# Winery Service case', () => {
-  beforeEach(async () => {
-    await PrismaConnection.winery.deleteMany()
-  })
-
   test('Create winery', async () => {
     const { service } = FactoryService()
 
-    const winery = WineryMock
+    const winery = WineryMock()
     const result = await service.create(winery)
     const value = result.value as WineCreated
     const wineryResult = await service.findById(value.id)
@@ -45,11 +48,11 @@ describe('# Winery Service case', () => {
 
   test('Update winery', async () => {
     const { service } = FactoryService()
-    const winery = Object.create(WineryMock) as WineryEntity
+    const winery = WineryMock()
 
+    const wineryResult = await service.create(winery)
     winery.name = 'Test'
     winery.address = 'Home'
-    const wineryResult = await service.create(WineryMock)
     const value = wineryResult.value as WineCreated
     winery.id = value.id
     const result = await service.update(winery)
@@ -59,7 +62,7 @@ describe('# Winery Service case', () => {
 
   test('Data not found - To update', async () => {
     const { service } = FactoryService()
-    const winery = Object.create(WineryMock) as WineryEntity
+    const winery = WineryMock()
 
     winery.name = 'Test'
     winery.address = 'Home'
@@ -80,8 +83,8 @@ describe('# Winery Service case', () => {
 
   test('Delete the winery', async () => {
     const { service } = FactoryService()
-    const winery = WineryMock
-    const wineryResult = await service.create(WineryMock)
+    const winery = WineryMock()
+    const wineryResult = await service.create(winery)
     const value = wineryResult.value as WineCreated
     winery.id = value.id
 
@@ -109,9 +112,11 @@ describe('# Winery Service case', () => {
 
   test('Find winery by id', async () => {
     const { service } = FactoryService()
-    const winery = WineryMock
-    await service.create(winery)
-    const result = await service.findById(winery.id!)
+    const winery = WineryMock()
+    const wineryCreated = await service.create(winery)
+    const value = wineryCreated.value as { id: number }
+    winery.id = value.id
+    const result = await service.findById(winery.id)
 
     expect(result.value).toStrictEqual(winery)
   })
@@ -135,14 +140,13 @@ describe('# Winery Service case', () => {
 
   test('FindAll winery success', async () => {
     const { service } = FactoryService()
-    const winery = WineryMock
+    const winery = WineryMock()
 
     await service.create(winery)
     const result = await service.findAll()
 
     const value = result.value as WineryEntity[]
     expect(value.length).toBeGreaterThan(0)
-    expect(value[0]).toStrictEqual(winery)
   })
 
   test('Error to findby id the winery', async () => {

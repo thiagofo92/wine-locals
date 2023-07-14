@@ -4,43 +4,42 @@ import { left } from '@/shared/errors/either'
 import { EventServiceMock } from '../__mocks__/event.service.mock'
 import { type EventEntity } from '@/core/entities'
 import { type EventServicePort } from '../port'
-import { EventPrismaService, UserPrismaService, WineTourismPrismaService, WineryPrismaService } from '../prisma'
-import { UserMock } from '../__mocks__/user.service.mock'
-import { WineryMock } from '../__mocks__/winery.service.mock'
-import { WineTourismMock } from '../__mocks__/wine-tourism.service.mock'
+import { EventPrismaService } from '../prisma'
+import { PrismaConnection } from '../prisma/connection/connection'
+import { randomUUID } from 'crypto'
 interface Factory {
   service: EventServicePort
 }
-
+const requestInfo = { data: '', requestId: randomUUID() }
+vi.mock('@/shared/util/async-hook', () => {
+  return {
+    Context: {
+      get: vi.fn(() => requestInfo)
+    }
+  }
+})
 function FactoryService (): Factory {
   const service = new EventPrismaService()
   return { service }
 }
+let idUser = ''
+let idWineTourism = 0
 
 describe('# Event case', () => {
   beforeAll(async () => {
-    const usersService = new UserPrismaService()
-    const wineryService = new WineryPrismaService()
-    const wineService = new WineTourismPrismaService()
+    const user = await PrismaConnection.users.findFirst()
+    const wine = await PrismaConnection.wine_tourism.findFirst()
 
-    const [user, winery] = await Promise.all([
-      usersService.create(UserMock),
-      wineryService.create(WineryMock)
-    ])
-
-    WineTourismMock.idWinery = winery.value.id
-    const wine = await wineService.create(WineTourismMock)
-
-    EventServiceMock.idUser = user.value.id
-    EventServiceMock.idWineTourism = wine.value.id
+    idUser = user!.uuid
+    idWineTourism = wine!.id
   })
 
   test('Create the event tourism experience', async () => {
     const { service } = FactoryService()
-    const eventMock = EventServiceMock
+    const eventMock = EventServiceMock(idUser, idWineTourism)
 
     const result = await service.create(eventMock)
-
+    if (result.isLeft()) throw new Error('Error to create event')
     expect(result.value.id).not.toBeNull()
   })
 
@@ -55,7 +54,7 @@ describe('# Event case', () => {
 
   test('Find all events', async () => {
     const service = new EventMemoryService()
-    const eventMock = EventServiceMock
+    const eventMock = EventServiceMock(idUser, idWineTourism)
 
     await service.create(eventMock)
     const result = await service.findAll()

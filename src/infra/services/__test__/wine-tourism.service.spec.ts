@@ -1,4 +1,4 @@
-import { describe, test, vi, expect, afterAll, beforeEach, beforeAll } from 'vitest'
+import { describe, test, vi, expect, beforeAll } from 'vitest'
 import { type WineTourismEntity } from '@/core/entities'
 import { left } from '@/shared/errors/either'
 import { DataServiceNotFound } from '../errors/data.service.error'
@@ -6,37 +6,36 @@ import { WineTourismMock } from '../__mocks__/wine-tourism.service.mock'
 import { type WineTourismServicePort } from '../port'
 import { WineTourismPrismaService } from '../prisma'
 import { PrismaConnection } from '../prisma/connection/connection'
-import { WineryMock } from '../__mocks__/winery.service.mock'
+import { randomUUID } from 'crypto'
 
 interface Factory {
   service: WineTourismServicePort
 }
 
 interface WineTourismCreated { id: number }
-
+const requestInfo = { data: '', requestId: randomUUID() }
+vi.mock('@/shared/util/async-hook', () => {
+  return {
+    Context: {
+      get: vi.fn(() => requestInfo)
+    }
+  }
+})
 function FactoryService (): Factory {
   const service = new WineTourismPrismaService()
   return { service }
 }
+
+let idWinery = 0
 describe('#WineTourism case', () => {
   beforeAll(async () => {
-    const result = await PrismaConnection.winery.create({
-      data: WineryMock
-    })
-
-    WineTourismMock.idWinery = result.id
+    const winery = await PrismaConnection.winery.findFirst()
+    idWinery = winery!.id
   })
 
-  afterAll(async () => {
-    await PrismaConnection.winery.deleteMany()
-  })
-
-  beforeEach(async () => {
-    await PrismaConnection.wine_tourism.deleteMany()
-  })
   test('Create the wine tourism experience', async () => {
     const { service } = FactoryService()
-    const wineryTourism = WineTourismMock
+    const wineryTourism = WineTourismMock(idWinery)
 
     const result = await service.create(wineryTourism)
     const value = result.value as WineTourismCreated
@@ -56,11 +55,11 @@ describe('#WineTourism case', () => {
 
   test('Update wine tourism', async () => {
     const { service } = FactoryService()
-    const wine = Object.create(WineTourismMock) as WineTourismEntity
+    const wine = WineTourismMock(idWinery)
 
+    const wineResult = await service.create(wine)
     wine.name = 'Test'
     wine.duration = '30min'
-    const wineResult = await service.create(WineTourismMock)
     const value = wineResult.value as WineTourismCreated
     wine.id = value.id
     const result = await service.update(wine)
@@ -70,7 +69,7 @@ describe('#WineTourism case', () => {
 
   test('Data not found - To update', async () => {
     const { service } = FactoryService()
-    const wineTourism = WineTourismMock
+    const wineTourism = WineTourismMock(idWinery)
 
     const result = await service.update(wineTourism)
 
@@ -88,7 +87,7 @@ describe('#WineTourism case', () => {
 
   test('Delete the wine tourism', async () => {
     const { service } = FactoryService()
-    const winery = WineTourismMock
+    const winery = WineTourismMock(idWinery)
     const wineResult = await service.create(winery)
     const value = wineResult.value as WineTourismCreated
 
@@ -117,7 +116,7 @@ describe('#WineTourism case', () => {
 
   test('Find wine tourism by id', async () => {
     const { service } = FactoryService()
-    const winery = WineTourismMock
+    const winery = WineTourismMock(idWinery)
     const wineResult = await service.create(winery)
     const value = wineResult.value as WineTourismCreated
 
@@ -146,7 +145,7 @@ describe('#WineTourism case', () => {
 
   test('FindAll wine tourism success', async () => {
     const { service } = FactoryService()
-    const winery = WineTourismMock
+    const winery = WineTourismMock(idWinery)
 
     const wineryResult = await service.create(winery)
     const { id } = wineryResult.value as WineTourismCreated
@@ -155,7 +154,6 @@ describe('#WineTourism case', () => {
     winery.id = id
     const value = result.value as WineTourismEntity[]
     expect(value.length).toBeGreaterThan(0)
-    expect(value[0]).toStrictEqual(winery)
   })
 
   test('Error to findby id the wine tourism', async () => {

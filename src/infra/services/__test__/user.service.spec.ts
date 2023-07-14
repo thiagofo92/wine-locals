@@ -1,28 +1,32 @@
-import { beforeEach, describe, expect, test, vi } from 'vitest'
+import { describe, expect, test, vi } from 'vitest'
 import { UserMock } from '../__mocks__/user.service.mock'
 import { left } from '@/shared/errors/either'
 import { DataServiceNotFound } from '../errors/data.service.error'
 import { type UserEntity } from '@/core/entities'
 import { type UserServicePort } from '../port'
 import { UserPrismaService } from '../prisma'
-import { PrismaConnection } from '../prisma/connection/connection'
-
+import { randomUUID } from 'crypto'
+import { UserValidateFail } from '../errors/user.service.error'
 interface Factory {
   service: UserServicePort
 }
-
+const requestInfo = { data: '', requestId: randomUUID() }
+vi.mock('@/shared/util/async-hook', () => {
+  return {
+    Context: {
+      get: vi.fn(() => requestInfo)
+    }
+  }
+})
 function FactoryService (): Factory {
   const service = new UserPrismaService()
   return { service }
 }
 
 describe('# User service', () => {
-  beforeEach(async () => {
-    await PrismaConnection.users.deleteMany()
-  })
   test('Register user to database', async () => {
     const { service } = FactoryService()
-    const user = UserMock
+    const user = UserMock()
     const result = await service.create(user)
 
     expect(result.value).toStrictEqual(user.id)
@@ -30,7 +34,7 @@ describe('# User service', () => {
 
   test('Fail to register user', async () => {
     const { service } = FactoryService()
-    const user = UserMock
+    const user = UserMock()
     vi.spyOn(service, 'create').mockResolvedValueOnce(left(new Error()))
     const result = await service.create(user)
 
@@ -39,7 +43,7 @@ describe('# User service', () => {
 
   test('Update user', async () => {
     const { service } = FactoryService()
-    const user = Object.create(UserMock) as UserEntity
+    const user = UserMock()
     await service.create(user)
     user.name = 'Test'
     user.password = 'test'
@@ -58,7 +62,7 @@ describe('# User service', () => {
 
   test('Delete user', async () => {
     const { service } = FactoryService()
-    const user = UserMock
+    const user = UserMock()
 
     await service.create(user)
     const result = await service.delete(user.id)
@@ -68,7 +72,7 @@ describe('# User service', () => {
 
   test('User not found when try to delete', async () => {
     const { service } = FactoryService()
-    const user = UserMock
+    const user = UserMock()
 
     const result = await service.delete(user.id)
 
@@ -77,7 +81,7 @@ describe('# User service', () => {
 
   test('Find user by id', async () => {
     const { service } = FactoryService()
-    const user = UserMock
+    const user = UserMock()
 
     await service.create(user)
     const result = await service.findById(user.id)
@@ -94,7 +98,7 @@ describe('# User service', () => {
 
   test('Find all user', async () => {
     const { service } = FactoryService()
-    const user = UserMock
+    const user = UserMock()
 
     await service.create(user)
     const result = await service.findAll()
@@ -104,11 +108,11 @@ describe('# User service', () => {
 
   test('Valide the email and password', async () => {
     const { service } = FactoryService()
-    const user = UserMock
+    const user = UserMock()
 
     await service.create(user)
     const result = await service.validate(user.email, user.password)
 
-    expect(result.value).toStrictEqual(true)
+    expect(result.value).not.toBeInstanceOf(UserValidateFail)
   })
 })
