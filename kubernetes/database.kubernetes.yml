@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: wine-locals-db
+  labels:
+    app: wine-locals-db
+spec:
+  containers:
+  - name: mysqldb
+    image: mysql:5.6
+    ports:
+      - containerPort: 3306
+    env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: senha_root_123
+      - name: MYSQL_DATABASE
+        value: wine-locals
