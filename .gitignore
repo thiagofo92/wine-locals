@@ -3,3 +3,6 @@ Task.txt
 coverage
 logs
 .vscode
+dist
+data
+prisma/migrations
